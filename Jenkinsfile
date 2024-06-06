@@ -11,13 +11,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-             checkout scmGit(
-                branches: [[name: 'main']],
-                userRemoteConfigs: [[url: 'https://github.com/jiechenmc/Freon.git']])
-            }
-        }
         stage('List Directory') {
             steps {
                 sh 'ls **'
@@ -26,7 +19,7 @@ pipeline {
         stage('Terraform') {
             steps {
                 script {
-                        dir('app/terraform') {
+                        dir('terraform') {
                             sh 'terraform init'
                             sh 'terraform validate'
                             sh "terraform ${params.ACTION} -auto-approve"
