@@ -31,7 +31,7 @@ pipeline {
         stage('Ansible'){
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'wsl', keyFileVariable: 'SSH_KEY', usernameVariable: 'ubuntu')]) {
-                    sh 'echo ${SSH_KEY}'
+                    sh 'cat ${SSH_KEY}'
                     sh 'ansible-playbook ./ansible/site.yml -i hosts -u ubuntu --private-key ${SSH_KEY}' 
                 }
             }
