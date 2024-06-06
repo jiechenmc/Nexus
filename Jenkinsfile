@@ -20,9 +20,7 @@ pipeline {
         }
         stage('List Directory') {
             steps {
-                sh 'tree'
-                sh 'ls Checkout/'
-                sh 'ls Freon/'
+                sh 'ls **'
             }
         }
         stage('Terraform') {
