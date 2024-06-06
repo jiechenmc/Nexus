@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'What action should Terraform take?')
+        choice(name: 'action', choices: ['apply', 'destroy'], description: 'What action should Terraform take?')
     }
 
     environment {
@@ -23,7 +23,7 @@ pipeline {
                         dir('terraform') {
                             sh 'terraform init'
                             sh 'terraform validate'
-                            sh "terraform ${params.ACTION} -auto-approve"
+                            sh "terraform ${params.action} -auto-approve"
                             if (params.ACTION == 'apply') {
                             sleep(time:10,unit:"SECONDS")
                             }
@@ -34,7 +34,7 @@ pipeline {
         stage('Ansible'){
             when {
                 expression {
-                    return params.ACTION == 'apply'
+                    return params.action == 'apply'
                 }
             }
             steps {
