@@ -26,7 +26,7 @@ pipeline {
         stage('Terraform') {
             steps {
                 script {
-                        dir('Checkout/Freon') {
+                        dir('app') {
                             sh 'terraform init'
                             sh 'terraform validate'
                             sh "terraform ${params.ACTION} -auto-approve"
