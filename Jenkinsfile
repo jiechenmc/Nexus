@@ -9,13 +9,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                dir("app")
                 git branch: 'main', url: 'https://github.com/jiechenmc/Freon.git'
             }
         }
         stage('Terraform') {
             steps {
                 script {
-                        dir('Checkout') {
+                        dir('app') {
                             sh 'terraform init'
                             sh 'terraform validate'
                             sh "terraform apply -auto-approve"
