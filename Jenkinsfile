@@ -12,15 +12,16 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/jiechenmc/Freon.git'
             }
         }
-        stage('Terraform init') {
+        stage('Terraform') {
             steps {
-                sh 'terraform init'
-            }
-        }
-        stage('Terraform apply') {
-            steps {
-                sh 'terraform apply --auto-approve'
-            }
+                script {
+                        dir('Terraform') {
+                            sh 'terraform init'
+                            sh 'terraform validate'
+                            sh "terraform apply -auto-approve"
+                            }
+                        }
+                }
         }
     }
 }
