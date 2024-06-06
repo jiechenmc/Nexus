@@ -24,11 +24,11 @@ pipeline {
                             sh 'terraform init'
                             sh 'terraform validate'
                             sh "terraform ${params.ACTION} -auto-approve"
+                            if (params.ACTION == 'apply') {
+                            sleep(time:10,unit:"SECONDS")
+                            }
                             }
                         }
-                if (params.ACTION == 'apply') {
-                    sleep(time:10,unit:"SECONDS")
-                    }
                 }
         }
         stage('Ansible'){
