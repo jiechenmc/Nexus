@@ -20,7 +20,7 @@ pipeline {
         }
         stage('List Directory') {
             steps {
-                sh 'pwd'
+                sh 'ls'
             }
         }
         stage('Terraform') {
