@@ -13,7 +13,7 @@ provider "aws" {
 
 resource "aws_security_group" "minecraft" {
   ingress {
-    description = "Receive SSH from home."
+    description = "Receive SSH from anywhere."
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
