@@ -26,10 +26,15 @@ pipeline {
                             sh "terraform ${params.ACTION} -auto-approve"
                             }
                         }
-                sleep(time:5,unit:"SECONDS")
+                sleep(time:10,unit:"SECONDS")
                 }
         }
         stage('Ansible'){
+            when {
+                expression {
+                    return params.ACTION == 'apply'
+                }
+            }
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'wsl', keyFileVariable: 'SSH_KEYFILE', usernameVariable: 'ubuntu')]) {
                     sh 'ansible-playbook ./ansible/site.yml -i hosts -u ubuntu --private-key=${SSH_KEYFILE}' 
