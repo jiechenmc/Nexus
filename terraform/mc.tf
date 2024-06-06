@@ -58,3 +58,10 @@ resource "aws_instance" "minecraft" {
 output "instance_ip_addr" {
   value = aws_instance.minecraft.public_ip
 }
+
+resource "local_file" "hosts" {
+  filename = "../hosts"
+  content = templatefile("${path.module}/init.tftpl", {
+    ip = aws_instance.minecraft.public_ip
+  })
+}
