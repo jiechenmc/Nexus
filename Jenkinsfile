@@ -9,7 +9,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/jiechenmc/Freon.git'
+             checkout scmGit(
+                branches: [[name: 'main']],
+                userRemoteConfigs: [[url: 'https://github.com/jiechenmc/Freon.git']])
             }
         }
         stage('Terraform') {
