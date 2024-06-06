@@ -41,7 +41,7 @@ resource "aws_security_group" "minecraft" {
 
 resource "aws_key_pair" "home" {
   key_name   = "Home"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = file("id_rsa.pub")
 }
 
 resource "aws_instance" "minecraft" {
