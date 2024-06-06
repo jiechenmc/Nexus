@@ -26,7 +26,6 @@ pipeline {
                             sh "terraform ${params.ACTION} -auto-approve"
                             }
                         }
-                sleep(time:10,unit:"SECONDS")
                 }
         }
         stage('Ansible'){
