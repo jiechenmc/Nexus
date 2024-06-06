@@ -20,13 +20,13 @@ pipeline {
         }
         stage('List Directory') {
             steps {
-                sh 'ls **'
+                sh 'ls Checkout/Freon'
             }
         }
         stage('Terraform') {
             steps {
                 script {
-                        dir('app') {
+                        dir('Checkout/Freon/terraform') {
                             sh 'terraform init'
                             sh 'terraform validate'
                             sh "terraform ${params.ACTION} -auto-approve"
