@@ -20,6 +20,7 @@ pipeline {
         }
         stage('List Directory') {
             steps {
+                sh 'ls'
                 sh 'ls Checkout'
                 sh 'ls Freon'
             }
