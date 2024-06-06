@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'What action should Terraform take?')
+    }
+
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
@@ -20,7 +24,7 @@ pipeline {
                         dir('Freon') {
                             sh 'terraform init'
                             sh 'terraform validate'
-                            sh "terraform apply -auto-approve"
+                            sh "terraform ${params.ACTION} -auto-approve"
                             }
                         }
                 }
