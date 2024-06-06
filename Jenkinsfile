@@ -27,5 +27,12 @@ pipeline {
                         }
                 }
         }
+        stage('Ansible'){
+            steps {
+                script {
+                    sh 'ansible-playbook ./ansible/site.yml -i hosts -u ubuntu'
+                }
+            }
+        }
     }
 }
