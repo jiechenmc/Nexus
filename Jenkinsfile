@@ -18,6 +18,11 @@ pipeline {
                 userRemoteConfigs: [[url: 'https://github.com/jiechenmc/Freon.git']])
             }
         }
+        stage('List Directory') {
+            steps {
+                sh 'pwd'
+            }
+        }
         stage('Terraform') {
             steps {
                 script {
