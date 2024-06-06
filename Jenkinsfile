@@ -29,7 +29,7 @@ pipeline {
         }
         stage('Ansible'){
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'wsl', keyFileVariable: '~/.ssh/.id_rsa', usernameVariable: 'ubuntu')]) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'wsl', keyFileVariable: '~/.ssh/id_rsa', usernameVariable: 'ubuntu')]) {
                     sh 'ansible-playbook ./ansible/site.yml -i hosts -u ubuntu' 
                 }
             }
