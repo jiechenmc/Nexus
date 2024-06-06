@@ -9,8 +9,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                dir("app")
-                git branch: 'main', url: 'https://github.com/jiechenmc/Freon.git'
+                dir("app") {
+                    git branch: 'main', url: 'https://github.com/jiechenmc/Freon.git'
+                }
             }
         }
         stage('Terraform') {
