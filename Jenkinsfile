@@ -26,6 +26,7 @@ pipeline {
                             }
                         }
                 }
+                sleep(time:5,unit:"SECONDS")
         }
         stage('Ansible'){
             steps {
