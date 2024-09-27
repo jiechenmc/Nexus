@@ -1,6 +1,7 @@
 import redis
 import json
 import math
+import sympy
 
 # Connection to Redis
 redis_client = redis.StrictRedis(
@@ -22,16 +23,10 @@ redis_db1 = redis.StrictRedis(
 
 # Function to calculate the prime factors of a large number
 def prime_factors(n):
-    i = 2
+    factors_dict = sympy.factorint(n)
     factors = []
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-            factors.append(str(i))
-    if n > 1:
-        factors.append(str(n))
+    for prime, exponent in factors_dict.items():
+        factors.extend([prime] * exponent)  # Repeating prime according to its exponent
     return factors
 
 # Subscribe to channel "hw3" on DB 0
@@ -51,6 +46,7 @@ for message in pubsub.listen():
         # Calculate prime factors of BIGNUM (convert it from string to integer)
         big_number = int(bignum)
         factors = prime_factors(big_number)
+        factors = list(map(str, factors))
 
         # Prepare the response
         response = {
@@ -61,4 +57,4 @@ for message in pubsub.listen():
         # Publish the response to the specified channel on DB 1
         redis_db1.publish(response_channel, json.dumps(response))
 
-        print(f"Sent prime factors of {bignum} to channel {response_channel}")
+        print(f"Sent prime factors of {response} to channel {response_channel}")
