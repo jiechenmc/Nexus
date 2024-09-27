@@ -4,7 +4,7 @@ import math
 
 # Connection to Redis
 redis_client = redis.StrictRedis(
-    host='130.245.136.34', 
+    host='localhost', 
     port=6379, 
     password='66cfe2a89ba30e1a6c706756', 
     db=0, 
@@ -13,7 +13,7 @@ redis_client = redis.StrictRedis(
 
 # Connect to DB 1 for publishing the response
 redis_db1 = redis.StrictRedis(
-    host='130.245.136.34',
+    host='localhost',
     port=6379,
     password='66cfe2a89ba30e1a6c706756',
     db=1,
