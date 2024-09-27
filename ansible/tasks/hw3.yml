@@ -22,19 +22,10 @@
         type: bind
   tags: hw3
 
-- name: "copy main.py"
+- name: "copy src"
   ansible.builtin.copy:
-    src: ~/Nexus/hw3-redis/main.py # Local file path
-    dest: /root/main.py # Destination path on the remote server
-    owner: root # (Optional) Set the owner of the file
-    group: root # (Optional) Set the group of the file
-    mode: "0644" # (Optional) Set permissions on the file
-  tags: hw3
-
-- name: "copy requirements.txt"
-  ansible.builtin.copy:
-    src: ~/Nexus/hw3-redis/main.py # Local file path
-    dest: /root/main.py # Destination path on the remote server
+    src: ~/Nexus/hw3-redis/ # Local file path
+    dest: /root/src/ # Destination path on the remote server
     owner: root # (Optional) Set the owner of the file
     group: root # (Optional) Set the group of the file
     mode: "0644" # (Optional) Set permissions on the file
