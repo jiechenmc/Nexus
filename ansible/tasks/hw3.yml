@@ -1,0 +1,41 @@
+- name: "copy redis conf"
+  ansible.builtin.copy:
+    src: ~/Nexus/redis/redis.conf # Local file path
+    dest: /root/redis.conf # Destination path on the remote server
+    owner: root # (Optional) Set the owner of the file
+    group: root # (Optional) Set the group of the file
+    mode: "0644" # (Optional) Set permissions on the file
+  tags: hw3
+
+- name: "run redis container"
+  docker_container:
+    name: redis
+    image: redis
+    ports:
+      - 6379:6379
+    detach: true
+    command:
+    mounts:
+      - source: /root/redis.conf
+        target: /usr/local/etc/redis/redis.conf
+        read_only: no
+        type: bind
+  tags: hw3
+
+- name: "copy main.py"
+  ansible.builtin.copy:
+    src: ~/Nexus/hw3-redis/main.py # Local file path
+    dest: /root/main.py # Destination path on the remote server
+    owner: root # (Optional) Set the owner of the file
+    group: root # (Optional) Set the group of the file
+    mode: "0644" # (Optional) Set permissions on the file
+  tags: hw3
+
+- name: "copy requirements.txt"
+  ansible.builtin.copy:
+    src: ~/Nexus/hw3-redis/main.py # Local file path
+    dest: /root/main.py # Destination path on the remote server
+    owner: root # (Optional) Set the owner of the file
+    group: root # (Optional) Set the group of the file
+    mode: "0644" # (Optional) Set permissions on the file
+  tags: hw3
