@@ -1,0 +1,32 @@
+- name: Update apt and install cURL
+  apt:
+    name:
+      - curl
+    state: latest
+    update_cache: true
+
+- name: "copy hw1.html to red team"
+  ansible.builtin.copy:
+    src: ~/Nexus/hw4-ansible/hw1-red.html # Local file path
+    dest: /root/hw1.html # Destination path on the remote server
+  when: "'red' in group_names"
+
+- name: "copy hw1.html to blue team"
+  ansible.builtin.copy:
+    src: ~/Nexus/hw4-ansible/hw1-blue.html # Local file path
+    dest: /root/hw1.html # Destination path on the remote server
+  when: "'blue' in group_names"
+
+- name: "run NGINX container"
+  docker_container:
+    name: nginx
+    image: nginx
+    ports:
+      - 80:80
+    detach: true
+    command:
+    mounts:
+      - source: /root/hw1.html
+        target: /usr/share/nginx/html/hw1.html
+        read_only: no
+        type: bind
