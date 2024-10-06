@@ -2,6 +2,7 @@
   apt:
     name:
       - curl
+      - python3-docker
     state: latest
     update_cache: true
 
