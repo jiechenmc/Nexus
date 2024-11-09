@@ -1,0 +1,13 @@
+services:
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+      
+  memcached:
+    image: memcached
+    command:
+      - --conn-limit=1024
+      - --memory-limit=64
+      - --threads=4
