@@ -2,28 +2,76 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
+type Response struct {
+	Players []string `json:"players"`
+}
+
 func hw9(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("X-CSE356", "66cfe2a89ba30e1a6c706756")
+	w.Header().Set("X-CSE356", "66cfe2a89ba30e1a6c706756") // Add X-CSE356 header with submission ID
 
-	db, err := sql.Open("mysql", "root:example@/hw9")
-	if err != nil {
-		panic(err)
+	// Get player name from query parameters
+	playerName := req.URL.Query().Get("player")
+	if playerName == "" {
+		http.Error(w, "Player name is required", http.StatusBadRequest)
+		return
 	}
 
-	query := "select A.Player as p1,B.Player as p2,C.Player as p3,D.Player as p4 from assists A, assists B, assists C, assists D where A.POS=B.POS and B.POS=C.POS and C.POS=D.POS and A.Club<>B.Club and A.club<>C.Club and A.Club<>C.Club and A.Club<>D.Club and B.Club<>C.Club and B.Club<>D.Club and C.Club<>D.Club and A.Player='PLAYER_NAME_HERE' order by A.A+B.A+C.A+D.A desc, A.A desc, B.A desc, C.A desc, D.A desc, p1, p2, p3, p4 limit 1;"
-	res, err := db.Exec(query)
-
+	// Connect to the database
+	db, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/hw9")
 	if err != nil {
-		fmt.Println(res)
+		http.Error(w, "Database connection failed", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	// Define the query
+	query := `
+        SELECT A.Player AS p1, B.Player AS p2, C.Player AS p3, D.Player AS p4
+        FROM assists A, assists B, assists C, assists D
+        WHERE A.POS = B.POS 
+          AND B.POS = C.POS 
+          AND C.POS = D.POS 
+          AND A.Club <> B.Club 
+          AND A.Club <> C.Club 
+          AND A.Club <> D.Club 
+          AND B.Club <> C.Club 
+          AND B.Club <> D.Club 
+          AND C.Club <> D.Club 
+          AND A.Player = ?
+        ORDER BY A.A + B.A + C.A + D.A DESC, A.A DESC, B.A DESC, C.A DESC, D.A DESC, p1, p2, p3, p4
+        LIMIT 1;
+    `
+
+	// Execute the query
+	rows, err := db.Query(query, playerName)
+	if err != nil {
+		http.Error(w, "Query execution failed", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Process the results
+	var response Response
+	if rows.Next() {
+		var p1, p2, p3, p4 string
+		if err := rows.Scan(&p1, &p2, &p3, &p4); err != nil {
+			http.Error(w, "Error reading query result", http.StatusInternalServerError)
+			return
+		}
+		response.Players = []string{p1, p2, p3, p4}
+	} else {
+		response.Players = []string{} // No results, return an empty array
 	}
 
-	fmt.Fprintf(w, "hello\n")
+	// Encode the response as JSON and write it to the response writer
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
 
 func main() {
