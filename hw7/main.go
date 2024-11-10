@@ -3,8 +3,11 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strings"
 
+	"github.com/bradfitz/gomemcache/memcache"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -22,7 +25,26 @@ func hw9(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Connect to the database
+	// Initialize Memcached client
+	mc := memcache.New("localhost:11211") // Update this with your Memcached server address if necessary
+
+	// Check cache for the player data
+	cacheKey := "hw9_" + strings.Split(playerName, " ")[0] + strings.Split(playerName, " ")[1]
+	fmt.Println("Cache Key", cacheKey)
+	cachedItem, err := mc.Get(cacheKey)
+	if err == nil {
+		// Cache hit: decode the cached JSON data and return it
+		fmt.Println("Cache Hit")
+		var response Response
+		if err := json.Unmarshal(cachedItem.Value, &response); err == nil {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(response)
+			return
+		}
+	}
+
+	fmt.Println("Cache Miss")
+	// Cache miss: connect to the database
 	db, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/hw9")
 	if err != nil {
 		http.Error(w, "Database connection failed", http.StatusInternalServerError)
@@ -69,6 +91,19 @@ func hw9(w http.ResponseWriter, req *http.Request) {
 		response.Players = []string{} // No results, return an empty array
 	}
 
+	// Cache the result in Memcached
+	responseJSON, err := json.Marshal(response)
+	if err != nil {
+		panic(err)
+	}
+	mc.Set(&memcache.Item{
+		Key:        cacheKey,
+		Value:      responseJSON,
+		Expiration: int32(60 * 5), // Cache expiration time in seconds (e.g., 5 minutes)
+	})
+	fmt.Println(cacheKey)
+	fmt.Println(responseJSON)
+
 	// Encode the response as JSON and write it to the response writer
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
@@ -77,6 +112,6 @@ func hw9(w http.ResponseWriter, req *http.Request) {
 func main() {
 
 	http.HandleFunc("/hw9", hw9)
-
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Server is listening on port 80...")
+	http.ListenAndServe(":80", nil)
 }

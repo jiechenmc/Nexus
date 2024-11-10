@@ -12,3 +12,8 @@ services:
       - --conn-limit=1024
       - --memory-limit=64
       - --threads=4
+    network_mode: host
+    
+  server:
+    build: .
+    network_mode: host
