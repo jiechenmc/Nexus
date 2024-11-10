@@ -111,7 +111,7 @@ func hw9(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 
-	http.HandleFunc("/hw9", hw9)
+	http.HandleFunc("/hw6", hw9)
 	fmt.Println("Server is listening on port 80...")
 	http.ListenAndServe(":80", nil)
 }
